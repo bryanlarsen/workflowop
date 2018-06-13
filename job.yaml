@@ -11,5 +11,16 @@ spec:
       - name: workflowop
         image: workflowop
         imagePullPolicy: Never
-        command: ["sleep",  "3600"]
+        volumeMounts:
+          - mountPath: /data
+            name: data
+          - mountPath: /spec
+            name: spec
       restartPolicy: Never
+      volumes:
+      - name: data
+        hostPath:
+          path: /tmp
+      - name: spec
+        configMap:
+          name: workflowop-spec1
