@@ -1,0 +1,51 @@
+[
+  {
+    "inputs": [
+      {
+        "type": "File",
+        "path": "/tmp/a.txt"
+      },
+      {
+        "type": "File",
+        "path": "/tmp/b.txt"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "File",
+        "path": "/tmp/d.txt"
+      }
+    ],
+    "selector": "job-template=foo",
+    "spec": {
+      "apiVersion": "batch/v1",
+      "kind": "Job",
+      "metadata": {
+        "generateName": "foo-"
+      },
+      "spec": {
+        "template": {
+          "metadata": {
+            "labels": {
+              "job-template": "foo"
+            }
+          },
+          "spec": {
+            "restartPolicy": "Never",
+            "containers": [
+              {
+                "name": "foo",
+                "command": [
+                  "/bin/bash",
+                  "-c",
+                  "exit 0"
+                ],
+                "image": "ubuntu"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+]

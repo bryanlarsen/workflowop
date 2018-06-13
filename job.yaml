@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: workflowop-1
+spec:
+  template:
+    spec:
+      serviceAccount: workflowop
+      serviceAccountName: workflowop
+      containers:
+      - name: workflowop
+        image: workflowop
+        imagePullPolicy: Never
+        command: ["sleep",  "3600"]
+      restartPolicy: Never
