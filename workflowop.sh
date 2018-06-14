@@ -23,7 +23,8 @@ while true ; do
         outputs_exist=true
         for output_path in $(jq -r ".[${i}].outputs[].path" ${SPEC}); do
             if stat $output_path 2>/dev/null > /dev/null; then
-                echo "output $output_path exists"
+                true
+                #echo "output $output_path exists"
             else
                 outputs_exist=false
                 echo "output $output_path missing"
@@ -32,7 +33,7 @@ while true ; do
         done
 
         if [ $outputs_exist = true ] ; then
-            #echo "All outputs exist, job #${i} is complete"
+            echo "All outputs exist: " $(jq -r ".[${i}].outputs[].path" ${SPEC})
             let have_outputs+=1
             continue
         else
@@ -42,7 +43,8 @@ while true ; do
         inputs_exist=true
         for input_path in $(jq -r ".[${i}].inputs[].path" ${SPEC}); do
             if stat $input_path 2>/dev/null > /dev/null; then
-                echo "input $input_path exists"
+                true
+                #echo "input $input_path exists"
             else
                 inputs_exist=false
                 echo "input $input_path missing"
@@ -54,6 +56,8 @@ while true ; do
             #echo "Some inputs missing, job #${i} waiting for reqs"
             continue
         fi
+
+        echo "All inputs exist: " $(jq -r ".[${i}].inputs[].path" ${SPEC})
         let have_inputs+=1
 
         # possible statuses: Completed ContainerCreating Error Pending Running Unknown Succeeded Failed
