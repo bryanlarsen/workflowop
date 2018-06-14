@@ -8,8 +8,8 @@ KUBECTL="kubectl ${KUBECTL_ARGS}"
 SPEC=${SPEC:-spec/spec.json}
 LOOP_DELAY=${LOOP_DELAY:-15}
 
-
-length=$(jq -r 'length' ${SPEC})
+echo "Starting"
+readarray -t specs < <(jq -c '.[]' ${SPEC})
 
 while true ; do
     all_complete=true
@@ -19,7 +19,7 @@ while true ; do
     have_pending=0
     have_started=0
 
-    for i in `seq 0 $(($length - 1))` ; do
+    for fragment in "${specs[@]}" ; do
         #echo "Checking #${i} $(jq -r .[${i}].selector ${SPEC})"
 
         fragment=$(jq -r ".[${i}]" ${SPEC})
