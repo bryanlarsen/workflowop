@@ -22,7 +22,6 @@ while true ; do
     for fragment in "${specs[@]}" ; do
         #echo "Checking #${i} $(jq -r .[${i}].selector ${SPEC})"
 
-        fragment=$(jq -r ".[${i}]" ${SPEC})
         let total+=1
         outputs_exist=true
         for output_path in $(echo $fragment | jq -r ".outputs[].path"); do
