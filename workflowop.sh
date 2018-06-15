@@ -34,11 +34,16 @@ while true ; do
             all_complete=false
         fi
 
-        if echo "$fragment" | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
+        read inputs_length < <(echo "$fragment" | jq -r '.inputs | length')
+        if [ $inputs_length = 0 ] ; then
             true
         else
-            echo "${selector}: Some inputs missing"
-            continue
+            if echo "$fragment" | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
+                true
+            else
+                echo "${selector}: Some inputs missing"
+                continue
+            fi
         fi
 
         let have_inputs+=1
