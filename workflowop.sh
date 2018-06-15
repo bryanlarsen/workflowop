@@ -25,10 +25,10 @@ while true ; do
 
         let total+=1
         echo "read selector"
-        read selector < <(echo $fragment | jq -r .selector)
+        read selector < <(echo "$fragment" | jq -r .selector)
 
         echo "check outputs"
-        if echo $fragment | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
+        if echo "$fragment" | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
             echo "${selector}: All outputs exist"
             continue
@@ -38,7 +38,7 @@ while true ; do
 
         echo "checking inputs"
 
-        if echo $fragment | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
+        if echo "$fragment" | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             true
         else
             echo "${selector}: Some inputs missing"
@@ -61,7 +61,7 @@ while true ; do
         echo "starting job"
 
         let have_started+=1
-        echo $fragment | jq -r .spec | ${KUBECTL} create -f -
+        echo "$fragment" | jq -r .spec | ${KUBECTL} create -f -
     done
 
     if [ $all_complete = true ] ; then
