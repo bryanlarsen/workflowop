@@ -24,8 +24,10 @@ while true ; do
         #echo "Checking #${i} $(jq -r .[${i}].selector ${SPEC})"
 
         let total+=1
+        echo "read selector"
         read selector < <(echo $fragment | jq -r .selector)
 
+        echo "check outputs"
         if echo $fragment | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
             echo "${selector}: All outputs exist"
