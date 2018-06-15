@@ -24,10 +24,8 @@ while true ; do
         #echo "Checking #${i} $(jq -r .[${i}].selector ${SPEC})"
 
         let total+=1
-        echo "read selector"
         read selector < <(echo "$fragment" | jq -r .selector)
 
-        echo "check outputs"
         if echo "$fragment" | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
             echo "${selector}: All outputs exist"
@@ -35,8 +33,6 @@ while true ; do
         else
             all_complete=false
         fi
-
-        echo "checking inputs"
 
         if echo "$fragment" | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             true
@@ -47,8 +43,6 @@ while true ; do
 
         let have_inputs+=1
 
-        echo "checking statuses"
-
         # possible statuses: Completed ContainerCreating Error Pending Running Unknown Succeeded Failed
         pod_statuses=$(${KUBECTL} get pods --selector=$selector --no-headers 2>/dev/null | tr -s ' ' | cut -d ' ' -f 3)
 
@@ -57,8 +51,6 @@ while true ; do
             let have_pending+=1
             continue
         fi
-
-        echo "starting job"
 
         let have_started+=1
         echo "$fragment" | jq -r .spec | ${KUBECTL} create -f -
