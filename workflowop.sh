@@ -26,7 +26,7 @@ while true ; do
         let total+=1
         selector=$(echo $fragment | jq -r .selector)
 
-        if stat -t $(echo $fragment | jq -r ".outputs[].path") 2>/dev/null > /dev/null; then
+        if echo $fragment | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
             echo "${selector}: All outputs exist"
             continue
@@ -34,7 +34,7 @@ while true ; do
             all_complete=false
         fi
 
-        if stat -t $(echo $fragment | jq -r ".inputs[].path") 2>/dev/null > /dev/null; then
+        if echo $fragment | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             true
         else
             echo "${selector}: Some inputs missing"
