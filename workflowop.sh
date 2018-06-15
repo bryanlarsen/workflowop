@@ -24,7 +24,7 @@ while true ; do
         #echo "Checking #${i} $(jq -r .[${i}].selector ${SPEC})"
 
         let total+=1
-        selector=$(echo $fragment | jq -r .selector)
+        read selector < <(echo $fragment | jq -r .selector)
 
         if echo $fragment | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
@@ -53,7 +53,7 @@ while true ; do
         fi
 
         let have_started+=1
-        echo $(echo $fragment | jq -r .spec) | ${KUBECTL} create -f -
+        echo $fragment | jq -r .spec | ${KUBECTL} create -f -
     done
 
     if [ $all_complete = true ] ; then
