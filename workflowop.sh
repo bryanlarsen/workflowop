@@ -34,6 +34,8 @@ while true ; do
             all_complete=false
         fi
 
+        echo "checking inputs"
+
         if echo $fragment | jq -r ".inputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             true
         else
@@ -43,6 +45,8 @@ while true ; do
 
         let have_inputs+=1
 
+        echo "checking statuses"
+
         # possible statuses: Completed ContainerCreating Error Pending Running Unknown Succeeded Failed
         pod_statuses=$(${KUBECTL} get pods --selector=$selector --no-headers 2>/dev/null | tr -s ' ' | cut -d ' ' -f 3)
 
@@ -51,6 +55,8 @@ while true ; do
             let have_pending+=1
             continue
         fi
+
+        echo "starting job"
 
         let have_started+=1
         echo $fragment | jq -r .spec | ${KUBECTL} create -f -
