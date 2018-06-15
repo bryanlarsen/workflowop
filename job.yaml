@@ -9,18 +9,20 @@ spec:
       serviceAccountName: workflowop
       containers:
       - name: workflowop
-        image: workflowop
+        image: workflowop:1546
         imagePullPolicy: Never
         volumeMounts:
-          - mountPath: /data
-            name: data
-          - mountPath: /spec
-            name: spec
+        - mountPath: /data
+          name: data
+        env:
+          - name: SPEC
+            value: /data/spec.json
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
       restartPolicy: Never
       volumes:
       - name: data
         hostPath:
-          path: /tmp
-      - name: spec
-        configMap:
-          name: workflowop-spec1
+          path: /mount-9p

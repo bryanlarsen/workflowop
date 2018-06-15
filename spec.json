@@ -3,17 +3,17 @@
     "inputs": [
       {
         "type": "File",
-        "path": "/tmp/a.txt"
+        "path": "/data/a.txt"
       },
       {
         "type": "File",
-        "path": "/tmp/b.txt"
+        "path": "/data/b.txt"
       }
     ],
     "outputs": [
       {
         "type": "File",
-        "path": "/tmp/d.txt"
+        "path": "/data/d.txt"
       }
     ],
     "selector": "job-template=foo",
@@ -35,11 +35,7 @@
             "containers": [
               {
                 "name": "foo",
-                "command": [
-                  "/bin/bash",
-                  "-c",
-                  "exit 0"
-                ],
+                "command": ["sleep", "30"],
                 "image": "ubuntu"
               }
             ]

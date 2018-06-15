@@ -46,14 +46,14 @@ while true ; do
         # possible statuses: Completed ContainerCreating Error Pending Running Unknown Succeeded Failed
         pod_statuses=$(${KUBECTL} get pods --selector=$selector --no-headers 2>/dev/null | tr -s ' ' | cut -d ' ' -f 3)
 
-        if echo $pod_statuses | grep 'Pending\|ContainerCreating\|Running\|CrashLoopBackoff' ; then
+        if echo $pod_statuses | grep 'Pending\|ContainerCreating\|Running\|CrashLoopBackoff' > /dev/null ; then
             echo ${selector} : ${pod_statuses}
             let have_pending+=1
             continue
         fi
 
         let have_started+=1
-        echo "$fragment" | jq -r .spec | ${KUBECTL} create -f -
+        echo "$fragment" | jq -r ".spec * {metadata: {ownerReferences: $(kubectl get pod ${POD_NAME} -o json | jq -c .metadata.ownerReferences)}}" | ${KUBECTL} create -f -
     done
 
     if [ $all_complete = true ] ; then
