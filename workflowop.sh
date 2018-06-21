@@ -66,7 +66,7 @@ while true ; do
         break
     fi
 
-    echo "Complete: ${have_outputs}/${total}; Ready: ${have_inputs}, Pending: ${have_pending}, Started: ${have_started}"
+    echo "Complete: ${have_outputs}/${total}; Ready: ${have_inputs}/$(($total - $have_outputs)), Pending: ${have_pending}, Started: ${have_started}"
     sleep ${LOOP_DELAY}
 done
 
