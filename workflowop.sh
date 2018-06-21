@@ -7,6 +7,7 @@ set -o pipefail
 KUBECTL="kubectl ${KUBECTL_ARGS}"
 SPEC=${SPEC:-spec/spec.json}
 LOOP_DELAY=${LOOP_DELAY:-15}
+LOG_DIR=${LOG_DIR:-/data/logs}
 
 echo "Starting"
 readarray -t specs < <(jq -c '.[]' ${SPEC})
@@ -28,7 +29,16 @@ while true ; do
 
         if echo "$fragment" | jq -r ".outputs[].path" | xargs stat -t  2>/dev/null > /dev/null; then
             let have_outputs+=1
-            echo "${selector}: All outputs exist"
+            if stat -t ${LOG_DIR}/${selector} 2> /dev/null > /dev/null ; then
+                echo "${selector}: All outputs exist"
+            else
+                mkdir -p ${LOG_DIR}/${selector}
+                pod_names=$(${KUBECTL} get pods --selector=$selector -o name | sed 's|^pod/||')
+                for pod in ${pod_names} ; do
+                    ${KUBECTL} logs ${pod} > ${LOG_DIR}/${selector}/${pod}.log
+                done
+                echo "${selector}: downloaded logs"
+            fi
             continue
         else
             all_complete=false
