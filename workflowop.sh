@@ -51,7 +51,7 @@ while true ; do
         # possible statuses: Completed ContainerCreating Error Pending Running Unknown Succeeded Failed
         pod_statuses=$(${KUBECTL} get pods --selector=$selector --no-headers 2>/dev/null | tr -s ' ' | cut -d ' ' -f 3)
 
-        if echo $pod_statuses | grep 'Pending\|ContainerCreating\|Running\|CrashLoopBackoff' > /dev/null ; then
+        if echo $pod_statuses | grep 'Pending\|ContainerCreating\|Running\|CrashLoopBackoff\|ErrImagePull\|ImagePullBackOff' > /dev/null ; then
             echo ${selector} : ${pod_statuses}
             let have_pending+=1
             continue
